@@ -64,6 +64,17 @@ class SimpleHttpServer
           break if buf.size != RECV_BUF
         end
 
+        # for safari's POST method
+        if data[0] == 'P'
+          if data.split("\r\n\r\n")[1] == nil
+            while true
+              buf = conn.recv RECV_BUF
+              data << buf
+              break if buf.size != RECV_BUF
+            end
+          end
+        end
+        
         # init per request
         @r = HTTP::Parser.new.parse_request data
         @response_headers = {}
